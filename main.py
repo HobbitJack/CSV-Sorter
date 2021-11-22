@@ -173,69 +173,75 @@ data = {}
 commands = []
 print('Welcome to CSV Analyzer. Enter a command or type help for a list of commands')
 
+
 # main command line interface
-while True:
-    command = input('> ')
-    commands.insert(0, command)
-    command = command.split(' ')
+def main() -> None:
+    while True:
+        command = input('> ')
+        commands.insert(0, command)
+        command = command.split(' ')
 
-    match command[0]:
-        case 'compare':
-            if parameter_check(4, len(command) - 1):
-                new_dataset = compare_data(command[1], command[2], command[3], command[4])
-                print(new_dataset)
-                save_as = input('Input an alias to save the compared data as, or None to not save it: ')
-                if save_as.lower() != 'none':
-                    data[save_as] = new_dataset
+        match command[0]:
+            case 'compare':
+                if parameter_check(4, len(command) - 1):
+                    new_dataset = compare_data(command[1], command[2], command[3], command[4])
+                    print(new_dataset)
+                    save_as = input('Input an alias to save the compared data as, or None to not save it: ')
+                    if save_as.lower() != 'none':
+                        data[save_as] = new_dataset
 
-        case 'data':
-            data_print()
+            case 'data':
+                data_print()
 
-        case 'help':
-            help_print()
+            case 'help':
+                help_print()
 
-        case 'import':
-            if parameter_check(2, len(command) - 1):
-                import_csv(command[1], command[2])
-                print('CSV file successfully imported.')
+            case 'import':
+                if parameter_check(2, len(command) - 1):
+                    import_csv(command[1], command[2])
+                    print('CSV file successfully imported.')
 
-        case 'intersection':
-            if parameter_check(2, len(command) - 1):
-                combined_list = combine_lists(command[1], command[2], True)
-                print(combined_list)
-                save_as = input('Input an alias to save the intersection as, or None to not save it: ')
-                if save_as.lower() != 'none':
-                    data[save_as] = combined_list
+            case 'intersection':
+                if parameter_check(2, len(command) - 1):
+                    combined_list = combine_lists(command[1], command[2], True)
+                    print(combined_list)
+                    save_as = input('Input an alias to save the intersection as, or None to not save it: ')
+                    if save_as.lower() != 'none':
+                        data[save_as] = combined_list
 
-        case 'print':
-            if parameter_check(1, len(command) - 1):
-                dataset_print(command[1])
+            case 'print':
+                if parameter_check(1, len(command) - 1):
+                    dataset_print(command[1])
 
-        case 'quit':
-            print('Thank you for using this program.')
-            break
+            case 'quit':
+                print('Thank you for using this program.')
+                break
 
-        case 'save':
-            if parameter_check(2, len(command) - 1):
-                save_file(command[1], command[2])
+            case 'save':
+                if parameter_check(2, len(command) - 1):
+                    save_file(command[1], command[2])
 
-        case 'sort':
-            if parameter_check(3, len(command) - 1):
-                new_dataset = sort_data(command[1], command[2], command[3])
-                print(new_dataset)
-                save_as = input('Input an alias to save the sorted data as, or None to not save it: ')
-                if save_as.lower() != 'none':
-                    data[save_as] = new_dataset
+            case 'sort':
+                if parameter_check(3, len(command) - 1):
+                    new_dataset = sort_data(command[1], command[2], command[3])
+                    print(new_dataset)
+                    save_as = input('Input an alias to save the sorted data as, or None to not save it: ')
+                    if save_as.lower() != 'none':
+                        data[save_as] = new_dataset
 
-        case 'union':
-            if parameter_check(2, len(command) - 1):
-                combined_list = combine_lists(command[1], command[2], True)
-                print(combined_list)
-                save_as = input('Input an alias to save the union as, or None to not save it: ')
-                if save_as.lower() != 'none':
-                    data[save_as] = combined_list
+            case 'union':
+                if parameter_check(2, len(command) - 1):
+                    combined_list = combine_lists(command[1], command[2], True)
+                    print(combined_list)
+                    save_as = input('Input an alias to save the union as, or None to not save it: ')
+                    if save_as.lower() != 'none':
+                        data[save_as] = combined_list
 
-        case _:
-            print('Error: Command not recognized.')
+            case _:
+                print('Error: Command not recognized.')
 
-print('Program exited successfully')
+    print('Program exited successfully')
+
+
+if __name__ == '__main__':
+    main()
