@@ -92,6 +92,25 @@ def determine_type(element: object) -> str:
                 return "str"
 
 
+def type_convert(convert_type: str, convert_object: str):
+    """Convert convert_object to type convert_type
+
+    :param convert_type: type to convert convert_object to
+    :param convert_object: object to convert into type convert_type
+    :raises ValueError: if convert_type is not 'int', 'float' or 'str'
+    :rtype: object
+    :return: Type-converted version of convert_object
+    """
+    if convert_type == "int":
+        return int(convert_object)
+    elif convert_type == "float":
+        return float(convert_object)
+    elif convert_type == "str":
+        return str(convert_object)
+    else:
+        raise ValueError
+
+
 def parameter_check(expected: int, actual: int) -> bool:
     """Return a bool as to whether the command received the expected number of parameters or not
 
@@ -165,11 +184,11 @@ def sort_data(dataset: str, parameter: str, reverse: str) -> list:
         for j in range(len(temp_list) - 1 - i):
             # if need to be swapped
             if (
-                globals()[sort_type](temp_list[j][parameter])
-                < globals()[sort_type](temp_list[j + 1][parameter])
+                type_convert(sort_type, temp_list[j][parameter])
+                < type_convert(sort_type, temp_list[j + 1][parameter])
                 and not reverse
-                or globals()[sort_type](temp_list[j][parameter])
-                > globals()[sort_type](temp_list[j + 1][parameter])
+                or type_convert(sort_type, temp_list[j][parameter])
+                > type_convert(sort_type, temp_list[j + 1][parameter])
                 and reverse
             ):
 
@@ -188,10 +207,18 @@ def save_file(dataset: str, location: str) -> None:
     :return: Nothing
     """
     with open(location, mode="w", encoding="utf8") as file_save:
-        for dictionary in data[dataset]:
+
+        line = ""
+        for key in data[dataset][0].keys():
+            line += f"{key},"
+        line += "\n"
+        line = line.replace(",\n", "\n")
+        file_save.write(line)
+
+        for data_item in data[dataset]:
             line = ""
-            for key in dictionary.keys():
-                line += f"{dictionary[key]},"
+            for item in data_item.items():
+                line += f"{item[1]},"
             line += "\n"
             line = line.replace(",\n", "\n")
             file_save.write(line)
@@ -214,14 +241,14 @@ def compare_data(
 
     # determine type
     compare_type = determine_type(data[dataset][0][parameter])
-    value = globals()[compare_type](value)
+    value = type_convert(compare_type, value)
 
     # run comparison
     for item in data[dataset]:
         if (
-            globals()[compare_type](item[parameter]) <= value
+            type_convert(compare_type, item[parameter]) <= value
             and not reverse
-            or globals()[compare_type](item[parameter]) >= value
+            or type_convert(compare_type, item[parameter]) >= value
             and reverse
         ):
             new_list.append(item)
@@ -357,6 +384,7 @@ def main() -> None:
             case "save":
                 if parameter_check(2, len(command) - 1):
                     save_file(command[1], command[2])
+                    print("File saved successfully.")
 
             case "sort":
                 if parameter_check(3, len(command) - 1):
