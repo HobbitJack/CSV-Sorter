@@ -36,7 +36,9 @@ CAPITAL_LETTERS = [letter.upper() for letter in LETTERS]
 # function definitions
 def help_print() -> None:
     """Print the help for each function into the console
+
     :rtype: None
+    :return: Nothing
     """
     print(
         "compare [dataset] [parameter] [value] [reverse: True, False]:"
