@@ -1,54 +1,120 @@
+"""Program which can analyse and sort .csv files"""
 # imports
 import csv
 
-LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-           'w', 'x', 'y', 'z']
+LETTERS = [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+]
 CAPITAL_LETTERS = [letter.upper() for letter in LETTERS]
 
 
 # function definitions
 def help_print() -> None:
-    print('compare [dataset] [parameter] [value] [reverse: True, False]: Looks through the dataset and adds all '
-          'items where the value of the parameter is greater than or equal to'
-          ' (less than or equal to for reverse = True) value to a new dataset, which will be saved as an alias.')
-    print('data: prints all datasets in-line.')
-    print('help: Displays a list of commands.')
-    print('import [alias] [filepath]: Imports the csv file at filepath and saves it to data as alias.')
-    print('intersection [dataset1] [dataset2]: Finds the intersection of two datasets.')
-    print('print [dataset]: Prints a specific dataset with each element of each data item listed on its own line.')
-    print('quit: Exits the program.')
-    print('save [dataset] [filepath]: Saves the specified dataset to a file at filepath, which should be a full,'
-          ' complete directory to which this program has write access.')
-    print('sort [dataset] [parameter] [reverse]: Sorts the dataset by parameter; sorts by reverse if reverse is True.')
-    print('union [dataset1] [dataset2]: Finds the union of two datasets.')
+    """Print the help for each function into the console
+    :rtype: None
+    """
+    print(
+        "compare [dataset] [parameter] [value] [reverse: True, False]:"
+        " Looks through the dataset and adds all "
+        "items where the value of the parameter is greater than or equal to"
+        " (less than or equal to for reverse = True) "
+        "value to a new dataset, which will be saved as an alias."
+    )
+    print("data: prints all datasets in-line.")
+    print("help: Displays a list of commands.")
+    print(
+        "import [alias] [filepath]: Imports the csv file"
+        " at filepath and saves it to data as alias."
+    )
+    print("intersection [dataset1] [dataset2]: Finds the intersection of two datasets.")
+    print(
+        "print [dataset]: Prints a specific dataset with each element of each data item "
+        "listed on its own line."
+    )
+    print("quit: Exits the program.")
+    print(
+        "save [dataset] [filepath]: Saves the specified dataset to a "
+        "file at filepath, which should be a full,"
+        " complete directory to which this program has write access."
+    )
+    print(
+        "sort [dataset] [parameter] [reverse]: Sorts the dataset by"
+        " parameter; sorts by reverse if reverse is True."
+    )
+    print("union [dataset1] [dataset2]: Finds the union of two datasets.")
 
 
-def determine_type(element) -> str:
-    if type(element) is float:
-        return 'float'
-    elif type(element) is int:
-        return 'int'
-    elif type(element) is str:
+def determine_type(element: object) -> str:
+    """Return the type of the inputted element for use in sorting
+
+    :param element: element to find the type of
+    :rtype: str
+    :return: type of the element as a string
+    """
+    if isinstance(element, float):
+        return "float"
+    elif isinstance(element, int):
+        return "int"
+    elif isinstance(element, str):
         try:
             int(element)
-            return 'int'
+            return "int"
         except ValueError:
             try:
                 float(element)
-                return 'float'
+                return "float"
             except ValueError:
-                return 'str'
+                return "str"
 
 
-def parameter_check(expected, actual):
+def parameter_check(expected: int, actual: int) -> bool:
+    """Return a bool as to whether the command received the expected number of parameters or not
+
+    :param expected: The expected number of parameters to pass to the function
+    :param actual: The actual number of parameters entered by the function
+    :rtype: bool
+    :return: Whether or not the number of parameters entered is the number expected
+    """
     if expected == actual:
         return True
     else:
-        print('Expected %d parameters but got %d instead.' % (expected, actual))
+        print(f"Expected {expected} parameters but got {actual} instead.")
         return False
 
 
-def data_maker(alias: str, file_data) -> None:
+def data_maker(alias: str, file_data: csv.reader) -> None:
+    """Create a new dictionary holding inputted .csv data
+
+    :param alias: Alias to save the data as
+    :param file_data: csv.reader iterable containing the read-in file data
+    :rtype: None
+    :return: Nothing
+    """
     keys = []
     lines = []
 
@@ -70,10 +136,26 @@ def data_maker(alias: str, file_data) -> None:
 
 
 def import_csv(alias: str, filepath: str) -> None:
-    data_maker(alias, csv.reader(open(filepath, 'r'), delimiter=','))
+    """Import a .csv file. Wrapper for data_maker()
+
+    :param alias: Alias to save the inputted data as; human readable + typeable
+    :param filepath: Filepath to .csv file to input
+    :rtype: None
+    :return: Nothing
+    """
+    with open(filepath, "r", encoding="utf8") as file:
+        data_maker(alias, csv.reader(file, delimiter=","))
 
 
-def sort_data(dataset: str, parameter, reverse) -> list:
+def sort_data(dataset: str, parameter: str, reverse: bool) -> list:
+    """Sort the list by parameter, and reverse sort if reverse is True
+
+    :param dataset: The dataset to sort
+    :param parameter: The parameter by which to sort
+    :param reverse: Will place the largest item at the start instead of end
+    :rtype: list
+    :return: List sorted by parameter
+    """
     # we need to CLONE data[dataset], not alias it!
     temp_list = data[dataset][:]
     sort_type = determine_type(temp_list[0][parameter])
@@ -82,10 +164,14 @@ def sort_data(dataset: str, parameter, reverse) -> list:
         # for remaining elements
         for j in range(len(temp_list) - 1 - i):
             # if need to be swapped
-            if eval('%s(temp_list[j][parameter]) < %s(temp_list[j + 1][parameter])'
-                    % (sort_type, sort_type)) and not reverse or \
-                    eval('%s(temp_list[j][parameter]) < %s(temp_list[j + 1][parameter])'
-                         % (sort_type, sort_type)) and reverse:
+            if (
+                globals()[sort_type](temp_list[j][parameter])
+                < globals()[sort_type](temp_list[j + 1][parameter])
+                and not reverse
+                or globals()[sort_type](temp_list[j][parameter])
+                > globals()[sort_type](temp_list[j + 1][parameter])
+                and reverse
+            ):
 
                 # Swap
                 temp_list[j], temp_list[j + 1] = temp_list[j + 1], temp_list[j]
@@ -94,36 +180,64 @@ def sort_data(dataset: str, parameter, reverse) -> list:
 
 
 def save_file(dataset: str, location: str) -> None:
-    file_save = open(location, mode='w')
-    for dictionary in data[dataset]:
-        line = ''
-        for key in dictionary.keys():
-            line += ('%s,' % dictionary[key])
-        line += '\n'
-        line = line.replace(',\n', '\n')
-        file_save.write(line)
-    file_save.close()
+    """Save a particular dataset as a new .csv file
+
+    :param dataset: The dataset to save
+    :param location: The full filepath of the save location
+    :rtype: None
+    :return: Nothing
+    """
+    with open(location, mode="w", encoding="utf8") as file_save:
+        for dictionary in data[dataset]:
+            line = ""
+            for key in dictionary.keys():
+                line += f"{dictionary[key]},"
+            line += "\n"
+            line = line.replace(",\n", "\n")
+            file_save.write(line)
 
 
-# noinspection PyUnusedLocal
-def compare_data(dataset: str, parameter: str, value: str | int | float, reverse: str) -> list:
+def compare_data(
+    dataset: str, parameter: str, value: str | int | float, reverse: str
+) -> list:
+    """Save only the elements which are greater than/less than or equal to the inputted value
+
+    :param dataset: The dataset to look at
+    :param parameter: The parameter to compare from
+    :param value: The value to compare to
+    :param reverse: Whether to do greater than or less than
+    :rtype: list
+    :return: A new list which has only the elements which passed the compare with value
+    """
     # need to CLONE data[dataset], not alias it!
     new_list = []
 
     # determine type
     compare_type = determine_type(data[dataset][0][parameter])
-    value = eval('%s(value)' % compare_type)
+    value = globals()[compare_type](value)
 
     # run comparison
-    for index, item in enumerate(data[dataset]):
-        if eval('%s(item[parameter]) <= value and not reverse or %s(item[parameter]) >= value and reverse' %
-                (compare_type, compare_type)):
+    for item in data[dataset]:
+        if (
+            globals()[compare_type](item[parameter]) <= value
+            and not reverse
+            or globals()[compare_type](item[parameter]) >= value
+            and reverse
+        ):
             new_list.append(item)
 
     return new_list
 
 
-def combine_lists(dataset_1: str, dataset_2: str, operation):
+def combine_lists(dataset_1: str, dataset_2: str, operation: bool) -> list:
+    """Combine two lists by a union or intersection
+
+    :param dataset_1: The first dataset to look at
+    :param dataset_2: The second dataset to look at
+    :param operation: True -> Intersection; False -> Union
+    :rtype: list
+    :return: A new list made by combining the inputted lists through the given operation
+    """
     new_list = []
 
     if operation:
@@ -155,93 +269,121 @@ def combine_lists(dataset_1: str, dataset_2: str, operation):
 
 
 def data_print() -> None:
-    for dataset in data.keys():
-        print('%s:' % dataset)
-        print(data[dataset])
+    """Print inline all current datasets
+
+    :rtype: None
+    :return: Nothing
+    """
+    for item in data.items():
+        print(f"{item[0]}:\n{item[1]}")
 
 
-def dataset_print(dataset):
-    print('%s:' % dataset)
+def dataset_print(dataset: str) -> None:
+    """Pretty-print all elements of a particular dataset
+
+    :param dataset:
+    :rtype: None
+    :return: Nothing
+    """
+    print(f"{dataset}:")
     for item in data[dataset]:
         print()
         for key in item.keys():
-            print('%s: %s' % (key, item[key]))
+            print(f"{key}: {item[key]}")
 
 
 # startup
 data = {}
 commands = []
-print('Welcome to CSV Analyzer. Enter a command or type help for a list of commands')
+print("Welcome to CSV Analyzer. Enter a command or type help for a list of commands")
 
 
 # main command line interface
 def main() -> None:
+    """Main program loop
+    :rtype: None
+    :return: Nothing
+    """
+
     while True:
-        command = input('> ')
+        command = input("> ")
         commands.insert(0, command)
-        command = command.split(' ')
+        command = command.split(" ")
 
         match command[0]:
-            case 'compare':
+            case "compare":
                 if parameter_check(4, len(command) - 1):
-                    new_dataset = compare_data(command[1], command[2], command[3], command[4])
+                    new_dataset = compare_data(
+                        command[1], command[2], command[3], command[4]
+                    )
                     print(new_dataset)
-                    save_as = input('Input an alias to save the compared data as, or None to not save it: ')
-                    if save_as.lower() != 'none':
+                    save_as = input(
+                        "Input an alias to save the compared "
+                        "data as, or None to not save it: "
+                    )
+                    if save_as.lower() != "none":
                         data[save_as] = new_dataset
 
-            case 'data':
+            case "data":
                 data_print()
 
-            case 'help':
+            case "help":
                 help_print()
 
-            case 'import':
+            case "import":
                 if parameter_check(2, len(command) - 1):
                     import_csv(command[1], command[2])
-                    print('CSV file successfully imported.')
+                    print("CSV file successfully imported.")
 
-            case 'intersection':
+            case "intersection":
                 if parameter_check(2, len(command) - 1):
                     combined_list = combine_lists(command[1], command[2], True)
                     print(combined_list)
-                    save_as = input('Input an alias to save the intersection as, or None to not save it: ')
-                    if save_as.lower() != 'none':
+                    save_as = input(
+                        "Input an alias to save the intersection"
+                        " as, or None to not save it: "
+                    )
+                    if save_as.lower() != "none":
                         data[save_as] = combined_list
 
-            case 'print':
+            case "print":
                 if parameter_check(1, len(command) - 1):
                     dataset_print(command[1])
 
-            case 'quit':
-                print('Thank you for using this program.')
+            case "quit":
+                print("Thank you for using this program.")
                 break
 
-            case 'save':
+            case "save":
                 if parameter_check(2, len(command) - 1):
                     save_file(command[1], command[2])
 
-            case 'sort':
+            case "sort":
                 if parameter_check(3, len(command) - 1):
                     new_dataset = sort_data(command[1], command[2], command[3])
                     print(new_dataset)
-                    save_as = input('Input an alias to save the sorted data as, or None to not save it: ')
-                    if save_as.lower() != 'none':
+                    save_as = input(
+                        "Input an alias to save the sorted data as,"
+                        " or None to not save it: "
+                    )
+                    if save_as.lower() != "none":
                         data[save_as] = new_dataset
 
-            case 'union':
+            case "union":
                 if parameter_check(2, len(command) - 1):
                     combined_list = combine_lists(command[1], command[2], True)
                     print(combined_list)
-                    save_as = input('Input an alias to save the union as, or None to not save it: ')
-                    if save_as.lower() != 'none':
+                    save_as = input(
+                        "Input an alias to save the union as, or None to not save it: "
+                    )
+                    if save_as.lower() != "none":
                         data[save_as] = combined_list
 
             case _:
-                print('Error: Command not recognized.')
+                print("Error: Command not recognized.")
 
-    print('Program exited successfully')
+    print("Program exited successfully")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
