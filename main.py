@@ -147,7 +147,7 @@ def import_csv(alias: str, filepath: str) -> None:
         data_maker(alias, csv.reader(file, delimiter=","))
 
 
-def sort_data(dataset: str, parameter: str, reverse: bool) -> list:
+def sort_data(dataset: str, parameter: str, reverse: str) -> list:
     """Sort the list by parameter, and reverse sort if reverse is True
 
     :param dataset: The dataset to sort
