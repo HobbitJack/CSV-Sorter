@@ -238,7 +238,6 @@ def compare_data(
     :rtype: list
     :return: A new list which has only the elements which passed the compare with value
     """
-    # need to CLONE data[dataset], not alias it!
     new_list = []
 
     # determine type
