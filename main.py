@@ -71,7 +71,7 @@ def help_print() -> None:
     print("union [dataset1] [dataset2]: Finds the union of two datasets.")
 
 
-def determine_type(element: object) -> str:
+def determine_type(element) -> str:
     """Return the type of the inputted element for use in sorting
 
     :param element: element to find the type of
@@ -80,18 +80,19 @@ def determine_type(element: object) -> str:
     """
     if isinstance(element, float):
         return "float"
-    elif isinstance(element, int):
+
+    if isinstance(element, int):
         return "int"
-    elif isinstance(element, str):
+
+    try:
+        int(element)
+        return "int"
+    except ValueError:
         try:
-            int(element)
-            return "int"
+            float(element)
+            return "float"
         except ValueError:
-            try:
-                float(element)
-                return "float"
-            except ValueError:
-                return "str"
+            return "str"
 
 
 def type_convert(convert_type: str, convert_object: str):
@@ -105,12 +106,14 @@ def type_convert(convert_type: str, convert_object: str):
     """
     if convert_type == "int":
         return int(convert_object)
-    elif convert_type == "float":
+
+    if convert_type == "float":
         return float(convert_object)
-    elif convert_type == "str":
+
+    if convert_type == "str":
         return str(convert_object)
-    else:
-        raise ValueError
+
+    raise ValueError
 
 
 def parameter_check(expected: int, actual: int) -> bool:
@@ -123,9 +126,9 @@ def parameter_check(expected: int, actual: int) -> bool:
     """
     if expected == actual:
         return True
-    else:
-        print(f"Expected {expected} parameters but got {actual} instead.")
-        return False
+
+    print(f"Expected {expected} parameters but got {actual} instead.")
+    return False
 
 
 def data_maker(alias: str, file_data: csv.reader) -> None:
@@ -282,7 +285,7 @@ def combine_lists(dataset_1: str, dataset_2: str, operation: bool) -> list:
         if not data[dataset_1]:
             return data[dataset_2]
 
-        elif not data[dataset_2]:
+        if not data[dataset_2]:
             return data[dataset_1]
 
         for item in data[dataset_1]:
@@ -416,3 +419,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    
