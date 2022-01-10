@@ -332,6 +332,7 @@ print("Welcome to CSV Analyzer. Enter a command or type help for a list of comma
 # main command line interface
 def main() -> None:
     """Main program loop
+
     :rtype: None
     :return: Nothing
     """
