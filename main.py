@@ -35,11 +35,13 @@ CAPITAL_LETTERS = [letter.upper() for letter in LETTERS]
 
 # function definitions
 def help_print() -> None:
-    """Print the help for each function into the console
+    '''
+    Prints the list of commands.
 
-    :rtype: None
-    :return: Nothing
-    """
+
+    :return: None
+    '''
+
     print(
         "compare [dataset] [parameter] [value] [reverse: True, False]:"
         " Looks through the dataset and adds all "
@@ -72,12 +74,12 @@ def help_print() -> None:
 
 
 def determine_type(element) -> str:
-    """Return the type of the inputted element for use in sorting
-
-    :param element: element to find the type of
-    :rtype: str
-    :return: type of the element as a string
-    """
+    '''
+    Given an element, return the type of that element.
+    
+    :param element: the element to be checked
+    :return: The type of the element.
+    '''
     if isinstance(element, float):
         return "float"
 
@@ -96,14 +98,12 @@ def determine_type(element) -> str:
 
 
 def type_convert(convert_type: str, convert_object: str):
-    """Convert convert_object to type convert_type
-
-    :param convert_type: type to convert convert_object to
-    :param convert_object: object to convert into type convert_type
-    :raises ValueError: if convert_type is not 'int', 'float' or 'str'
-    :rtype: object
-    :return: Type-converted version of convert_object
-    """
+    '''
+    Convert a string to a specific type.
+    
+    
+    :return: The value of the object.
+    '''
     if convert_type == "int":
         return int(convert_object)
 
@@ -117,13 +117,12 @@ def type_convert(convert_type: str, convert_object: str):
 
 
 def parameter_check(expected: int, actual: int) -> bool:
-    """Return a bool as to whether the command received the expected number of parameters or not
-
-    :param expected: The expected number of parameters to pass to the function
-    :param actual: The actual number of parameters entered by the function
-    :rtype: bool
-    :return: Whether or not the number of parameters entered is the number expected
-    """
+    '''
+    Check if the number of parameters passed to a function is correct.
+    
+    
+    :return: The function returns a boolean value.
+    '''
     if expected == actual:
         return True
 
@@ -132,13 +131,16 @@ def parameter_check(expected: int, actual: int) -> bool:
 
 
 def data_maker(alias: str, file_data: csv.reader) -> None:
-    """Create a new dictionary holding inputted .csv data
-
-    :param alias: Alias to save the data as
-    :param file_data: csv.reader iterable containing the read-in file data
-    :rtype: None
-    :return: Nothing
-    """
+    '''
+    The function takes in a file alias and a file data. 
+    It then creates a list of keys from the first line of the file data. 
+    It then iterates through the file data and creates a list of values. 
+    It then creates a dictionary of keys and values and appends it to a list. 
+    Finally, it creates a dictionary of file aliases and lists of dictionaries of keys and values.
+    
+    
+    :return: None
+    '''
     keys = []
     lines = []
 
@@ -160,26 +162,24 @@ def data_maker(alias: str, file_data: csv.reader) -> None:
 
 
 def import_csv(alias: str, filepath: str) -> None:
-    """Import a .csv file. Wrapper for data_maker()
-
-    :param alias: Alias to save the inputted data as; human readable + typeable
-    :param filepath: Filepath to .csv file to input
-    :rtype: None
-    :return: Nothing
-    """
+    '''
+    Reads a csv file and creates a table in the database.
+    
+    
+    :return: None
+    '''
     with open(filepath, "r", encoding="utf8") as file:
         data_maker(alias, csv.reader(file, delimiter=","))
 
 
 def sort_data(dataset: str, parameter: str, reverse: str) -> list:
-    """Sort the list by parameter, and reverse sort if reverse is True
-
-    :param dataset: The dataset to sort
-    :param parameter: The parameter by which to sort
-    :param reverse: Will place the largest item at the start instead of end
-    :rtype: list
-    :return: List sorted by parameter
-    """
+    '''
+    Given a dataset, a parameter, and a boolean value, sort the dataset by the parameter in either
+    ascending or descending order.
+    
+    
+    :return: A list of lists.
+    '''
     # we need to CLONE data[dataset], not alias it!
     temp_list = data[dataset][:]
     sort_type = determine_type(temp_list[0][parameter])
@@ -204,13 +204,12 @@ def sort_data(dataset: str, parameter: str, reverse: str) -> list:
 
 
 def save_file(dataset: str, location: str) -> None:
-    """Save a particular dataset as a new .csv file
-
-    :param dataset: The dataset to save
-    :param location: The full filepath of the save location
-    :rtype: None
-    :return: Nothing
-    """
+    '''
+    Save the data to a file.
+    
+    
+    :return: None
+    '''
     with open(location, mode="w", encoding="utf8") as file_save:
 
         line = ""
@@ -229,18 +228,15 @@ def save_file(dataset: str, location: str) -> None:
             file_save.write(line)
 
 
-def compare_data(
-    dataset: str, parameter: str, value: str | int | float, reverse: str
-) -> list:
-    """Save only the elements which are greater than/less than or equal to the inputted value
+def compare_data(dataset: str, parameter: str, value: str | int | float, reverse: str) -> list:
+    '''
+    Given a dataset, parameter, value, and reverse, return a list of items from the dataset that match
+    the given parameter.
+    
+    
+    :return: A list of items that meet the criteria.
+    '''
 
-    :param dataset: The dataset to look at
-    :param parameter: The parameter to compare from
-    :param value: The value to compare to
-    :param reverse: Whether to do greater than or less than
-    :rtype: list
-    :return: A new list which has only the elements which passed the compare with value
-    """
     new_list = []
 
     # determine type
@@ -261,14 +257,12 @@ def compare_data(
 
 
 def combine_lists(dataset_1: str, dataset_2: str, operation: bool) -> list:
-    """Combine two lists by a union or intersection
-
-    :param dataset_1: The first dataset to look at
-    :param dataset_2: The second dataset to look at
-    :param operation: True -> Intersection; False -> Union
-    :rtype: list
-    :return: A new list made by combining the inputted lists through the given operation
-    """
+    '''
+    Combine two lists based on the operation.
+    
+    
+    :return: A list of all the items according to the operation chosen.
+    '''
     new_list = []
 
     if operation:
@@ -300,33 +294,28 @@ def combine_lists(dataset_1: str, dataset_2: str, operation: bool) -> list:
 
 
 def data_print() -> None:
-    """Print inline all current datasets
-
-    :rtype: None
-    :return: Nothing
-    """
+    '''
+    Prints the data dictionary.
+    
+    
+    :return: None
+    '''
     for item in data.items():
         print(f"{item[0]}:\n{item[1]}")
 
 
 def dataset_print(dataset: str) -> None:
-    """Pretty-print all elements of a particular dataset
-
-    :param dataset:
-    :rtype: None
-    :return: Nothing
-    """
+    '''
+    Prints the keys and values of each item in the dataset.
+    
+    
+    :return: None
+    '''
     print(f"{dataset}:")
     for item in data[dataset]:
         print()
         for key in item.keys():
             print(f"{key}: {item[key]}")
-
-
-# startup
-data = {}
-commands = []
-print("Welcome to CSV Analyzer. Enter a command or type help for a list of commands")
 
 
 # main command line interface
@@ -417,7 +406,11 @@ def main() -> None:
 
     print("Program exited successfully")
 
+# startup
+data = {}
 
 if __name__ == "__main__":
+    commands = []
+    print("Welcome to CSV Analyzer. Enter a command or type help for a list of commands")
     main()
     
